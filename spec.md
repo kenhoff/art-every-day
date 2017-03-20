@@ -186,6 +186,31 @@ Ugh........this one sucks so much
 
 ### Navbar Component
 
+The little navbar that sits at the top of the page on every view
+
+#### App states
+
+**Unauthenticated**
+
+![](spec-images/navbar-unauthenticated.jpg)
+
+App name, "create account" button, "sign in" button, and link to support
+
+**Authenticated**
+
+![](spec-images/navbar-authenticated.jpg)
+
+App name, user profile image, authenticated user's username, and link to support
+
+#### Elements / Subcomponents
+
+-   App name (Art Every Day)
+-   Create Account button (links to `/create-account`)
+-   Sign in button (links to `/sign-in`)
+-   Username of authenticated user (links to `/<username>`)
+-   Profile image thumbnail of authenticated user (links to `/<username>`)
+-   "help" support link (links to `/support`)
+
 --------------------------------------------------------------------------------
 
 ### Image Grid Component
