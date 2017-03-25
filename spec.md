@@ -31,7 +31,7 @@
 -   [Navbar component](#navbar-component)
 -   "create account" and "sign in" buttons (link to `/create-account` and `/sign-in`)
 -   "Today's inspiration" with today's image (links to `/<current-date>`)
--   "Today's creations" with photo grid (each photo links to `/<username>/<current-date>`)
+-   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`)
 
 --------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@
 -   [Navbar component](#navbar-component)
 -   "Today's inspiration" with today's image (links to `/<current-date>`)
 -   "Upload your creation" button (links to links to `/<username>/<current-date>`)
--   "Today's creations" with photo grid (each photo links to `/<username>/<current-date>`)
+-   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`)
 
 --------------------------------------------------------------------------------
 
@@ -105,7 +105,9 @@
 -   [Navbar component](#navbar-component)
 -   "Today's inspiration" with today's image (links to `/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
 -   "Upload your creation" button - **only displays if user is authenticated** - (links to `/<username>/<current-date>`)
--   "Today's creations" with photo grid (each photo links to `/<username>/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
+-   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
+
+-   "Today's creations" with photo grid (each photo links to `/<username>/<current-date>`) -
 
 **TODO: clean up the button state, and if that should be reused, or if we should just consider it a different view altogether - same thing with today's date**
 
@@ -126,7 +128,8 @@
 -   Username
 -   (if authenticated and authorized) button for "Edit" (links to `/<username>/edit`)
 -   (if authenticated and authorized) button for "sign out" (links to `/sign-out`)
--   Photo grid component
+-   [Image grid component](#image-grid-component), "individual user" version. (each photo links to `/<username>/<current-date>`)
+
 
 **TODO: break this into two views, one with edit profile/sign out buttons and one without (authorized and unauthorized)**
 
@@ -214,6 +217,25 @@ App name, user profile image, authenticated user's username, and link to support
 --------------------------------------------------------------------------------
 
 ### Image Grid Component
+
+![](spec-images/image-grid.jpg)
+
+#### App states
+
+**Individual Day**
+
+Displays all of the images that have been uploaded for a single day
+
+**Individual User**
+
+Displays all of the images that a single user has uploaded. If the user didn't upload an image for a certain day, just make that day transparent (but clickable).
+
+#### Elements / Subcomponents
+
+-	Flexbox grid, centered, responsive
+-	Each photo links to `/<username>/<date>`
+
+**TODO: UI states, (blank, loading, partial, error, ideal)**
 
 --------------------------------------------------------------------------------
 
