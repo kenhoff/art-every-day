@@ -14,7 +14,7 @@
 
 (url info, including authentication/authorization stuff)
 
-#### Components
+#### React Components / Elements
 
 (list of components in the view - eventually, each one should be linked to the one in the components section)
 
@@ -29,10 +29,12 @@
     -   992px to 1199px
     -   1200px and up
 
+#### Redux Actions
+
 ## Components
 
 ### Component Name
 
 #### App states
 
-#### Elements / Subcomponents
+#### React Subcomponents / Elements

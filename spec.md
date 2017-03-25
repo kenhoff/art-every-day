@@ -26,10 +26,10 @@
 
 `/` (unauthenticated)
 
-#### Components
+#### React Components / Elements
 
 -   [Navbar component](#navbar-component)
--   "create account" and "sign in" buttons (link to `/create-account` and `/sign-in`)
+-   ["Create Account" / "Sign In" buttons](#create-account--sign-in-buttons)
 -   "Today's inspiration" with today's image (links to `/<current-date>`)
 -   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`)
 
@@ -129,7 +129,6 @@
 -   (if authenticated and authorized) button for "Edit" (links to `/<username>/edit`)
 -   (if authenticated and authorized) button for "sign out" (links to `/sign-out`)
 -   [Image grid component](#image-grid-component), "individual user" version. (each photo links to `/<username>/<current-date>`)
-
 
 **TODO: break this into two views, one with edit profile/sign out buttons and one without (authorized and unauthorized)**
 
@@ -232,10 +231,14 @@ Displays all of the images that a single user has uploaded. If the user didn't u
 
 #### Elements / Subcomponents
 
--	Flexbox grid, centered, responsive
--	Each photo links to `/<username>/<date>`
+-   Flexbox grid, centered, responsive
+-   Each photo links to `/<username>/<date>`
 
 **TODO: UI states, (blank, loading, partial, error, ideal)**
+
+--------------------------------------------------------------------------------
+
+# "Create Account" / "Sign In" buttons
 
 --------------------------------------------------------------------------------
 
