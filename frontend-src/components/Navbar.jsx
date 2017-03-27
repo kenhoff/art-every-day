@@ -1,6 +1,7 @@
+import React, {PropTypes} from "react";
 import AuthButtons from "./AuthButtons.jsx";
-import React from "react";
 import UserCard from "./UserCard.jsx";
+import {withRouter} from "react-router-dom";
 
 class Navbar extends React.Component {
 	render() {
@@ -18,7 +19,9 @@ class Navbar extends React.Component {
 		}
 		return (
 			<div>
-				<h1>Art Every Day</h1>
+				<h1 onClick={() => {
+					this.props.history.push("/");
+				}}>Art Every Day</h1>
 				{rightElements}
 			</div>
 		);
@@ -26,7 +29,8 @@ class Navbar extends React.Component {
 }
 
 Navbar.propTypes = {
-	user: React.PropTypes.object
+	history: PropTypes.object.isRequired,
+	user: PropTypes.object
 };
 
-export default Navbar;
+export default withRouter(Navbar);
