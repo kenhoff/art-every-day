@@ -1,6 +1,7 @@
 process.noDeprecation = true;
 
 module.exports = {
+	devtool: "cheap-module-eval-source-map",
 	entry: __dirname + "/frontend-src/entry.jsx",
 	module: {
 		rules: [{
@@ -9,7 +10,7 @@ module.exports = {
 			use: {
 				loader: "babel-loader",
 				options: {
-					presets: ["es2015", "react"]
+					presets: ["react", "es2015"]
 				},
 			}
 		}]

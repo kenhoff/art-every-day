@@ -34,6 +34,7 @@ module.exports = {
 			"always"
 		],
 		"no-console": ["warn"],
-		"sort-keys": ["error"]
+		"sort-keys": ["error"],
+		"sort-imports": ["error"]
 	}
 };

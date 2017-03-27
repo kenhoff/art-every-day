@@ -15,6 +15,9 @@
 | `/<username>/edit`   | authenticated and authorized          | Profile Edit              |
 | `/<username>/edit`   | unauthenticated or unauthorized       | redirect to `/<username>` |
 | `/<username>/<date>` | authenticated or unauthenticated      | Individual Art            |
+| `/forgot`            | authenticated                         | redirect to `/`           |
+| `/forgot`            | unauthenticated                       | redirect to `/help`       |
+| `/help`              | authenticated or unauthenticated      | Support                   |
 
 ## Views
 
@@ -28,10 +31,10 @@
 
 #### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   ["Create Account" / "Sign In" buttons](#create-account--sign-in-buttons)
--   "Today's inspiration" with today's image (links to `/<current-date>`)
--   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`)
+-   [Inspiration Image](#inspiration-image) with today's image
+-   [Image grid](#image-grid), "individual day" version. (each photo links to `/<username>/<current-date>`)
 
 --------------------------------------------------------------------------------
 
@@ -43,12 +46,13 @@
 
 `/` (authenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
--   "Today's inspiration" with today's image (links to `/<current-date>`)
+-   [Navbar](#navbar)
+-   [Inspiration Image](#inspiration-image) with today's image
+
 -   "Upload your creation" button (links to links to `/<username>/<current-date>`)
--   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`)
+-   [Image grid](#image-grid), "individual day" version. (each photo links to `/<username>/<current-date>`)
 
 --------------------------------------------------------------------------------
 
@@ -60,9 +64,9 @@
 
 `/create-account` (unauthenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   Email input field (must be validated)
 -   Password field (must be at least 8 characters, but I don't care what's in it)
 -   Repeat password field (must match) (but we might not need that, with reset password flow)
@@ -79,9 +83,9 @@
 
 `/sign-in` (unauthenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   Email input field (must be validated)
 -   Password input field
 -   "Sign in" button
@@ -89,6 +93,22 @@
 -   "Forgot password?" button (links to `/forgot`)
 
 **TODO: blank, partial, ideal, loading, error states**
+
+--------------------------------------------------------------------------------
+
+### Support View
+
+This is where we'll direct users for features that we haven't ended up building yet (password reset is the big one)
+
+#### URL
+
+`/help`
+
+#### React Components / Elements
+
+-   [Navbar](#navbar)
+-   "Yikes! We haven't built that yet :("
+-   "Need some help? Email ken@hoff.tech and he'll be able to help you out right away."
 
 --------------------------------------------------------------------------------
 
@@ -100,12 +120,12 @@
 
 `/<date>` (authenticated and unauthenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
--   "Today's inspiration" with today's image (links to `/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
+-   [Navbar](#navbar)
+-   [Inspiration Image](#inspiration-image) with the specified day's image
 -   "Upload your creation" button - **only displays if user is authenticated** - (links to `/<username>/<current-date>`)
--   [Image grid component](#image-grid-component), "individual day" version. (each photo links to `/<username>/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
+-   [Image grid](#image-grid), "individual day" version. (each photo links to `/<username>/<current-date>`) - alternate text depending on if it's "today" or "Jan 1st, 2017"
 
 -   "Today's creations" with photo grid (each photo links to `/<username>/<current-date>`) -
 
@@ -121,14 +141,14 @@
 
 `/<username>` (authenticated and unauthenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   User's profile picture
 -   Username
 -   (if authenticated and authorized) button for "Edit" (links to `/<username>/edit`)
 -   (if authenticated and authorized) button for "sign out" (links to `/sign-out`)
--   [Image grid component](#image-grid-component), "individual user" version. (each photo links to `/<username>/<current-date>`)
+-   [Image grid](#image-grid), "individual user" version. (each photo links to `/<username>/<current-date>`)
 
 **TODO: break this into two views, one with edit profile/sign out buttons and one without (authorized and unauthorized)**
 
@@ -142,9 +162,9 @@
 
 `/<username>/edit` (authenticated and authorized - otherwise, redirected to `/<username>`)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   Username field (verify that it's unique, confirm change)
 -   Photo upload/change form input
 -   Email input field (need to re-auth) **TODO**
@@ -173,20 +193,42 @@ Ugh........this one sucks so much
 
 `/<username>/<date>` (authenticated or unauthenticated)
 
-#### Components
+#### React Components / Elements
 
--   [Navbar component](#navbar-component)
+-   [Navbar](#navbar)
 -   User image component (links to image asset)
--   Inspiration image component (links to `/<date>`)
+-   [Inspiration Image](#inspiration-image) with the specified day's image
 -   User "card" component (links to `/<username>`)
 -   Countdown indicating how much time a user has left to upload some art
 -   Upload button for the user to upload an image
 
 --------------------------------------------------------------------------------
 
-## Components
+### Upload View
 
-### Navbar Component
+--------------------------------------------------------------------------------
+
+## React Components
+
+### App
+
+The main app wrapper, including most state information (user) and routing
+
+When the App component mounts, it grabs information about the currently authenticated user and the browser's date.
+
+#### State
+
+-   **date**: (string), the browser's current date in `YYYY-MM-DD` format
+-   **user**: (object), information about the currently authenticated user (via cookie/session). If there is no currently authenticated user, the app clears the cookie and refreshes the page (to force the landing page to show)
+
+#### Children
+
+-   [Navbar](#navbar)
+-   Whatever view is currently displayed (Dashboard, Individual Day, Profile/Individual User, Profile Edit, Individual Art, etc)
+
+--------------------------------------------------------------------------------
+
+### Navbar
 
 The little navbar that sits at the top of the page on every view
 
@@ -204,32 +246,42 @@ App name, "create account" button, "sign in" button, and link to support
 
 App name, user profile image, authenticated user's username, and link to support
 
-#### Elements / Subcomponents
+#### Props
+
+-   **user**: (string) username of signed in user, or `null` if no user is authenticated.
+
+#### Children
 
 -   App name (Art Every Day)
--   Create Account button (links to `/create-account`)
--   Sign in button (links to `/sign-in`)
+-   ["Create Account" / "Sign In" buttons](#create-account--sign-in-buttons)
 -   Username of authenticated user (links to `/<username>`)
 -   Profile image thumbnail of authenticated user (links to `/<username>`)
 -   "help" support link (links to `/support`)
 
 --------------------------------------------------------------------------------
 
-### Image Grid Component
+### Image Grid
 
 ![](spec-images/image-grid.jpg)
 
-#### App states
+#### Props
 
-**Individual Day**
+-   **date**: string in the format `YYYY-MM-DD`
+-   **user**: username string
 
-Displays all of the images that have been uploaded for a single day
+Must provide one or the other, but not both.
 
-**Individual User**
+#### State
 
-Displays all of the images that a single user has uploaded. If the user didn't upload an image for a certain day, just make that day transparent (but clickable).
+If **date** is in props:
 
-#### Elements / Subcomponents
+Displays all of the images that have been uploaded for that single day
+
+If **user** is in props
+
+Displays all of the images that user has uploaded, ordered from most recent to least recent. If the user didn't upload an image for a certain day, just make that day transparent (but clickable).
+
+#### Children
 
 -   Flexbox grid, centered, responsive
 -   Each photo links to `/<username>/<date>`
@@ -238,7 +290,52 @@ Displays all of the images that a single user has uploaded. If the user didn't u
 
 --------------------------------------------------------------------------------
 
-# "Create Account" / "Sign In" buttons
+### "Create Account" / "Sign In" buttons
+
+#### Children
+
+-   Create Account button (links to `/create-account`)
+-   Sign in button (links to `/sign-in`)
+
+--------------------------------------------------------------------------------
+
+### Inspiration Image
+
+Displays inspiration image for current date or specified date
+
+Links to `/<current-date>` or `/<specified-date>`
+
+alternate text depending on if it's "today" or "Jan 1st, 2017"
+
+#### Props
+
+-   **date**: string in the format `YYYY-MM-DD`. Optional - defaults to the current date
+
+#### State
+
+#### Children
+
+--------------------------------------------------------------------------------
+
+### "Upload your art" call-to-action section
+
+#### State
+
+If the user hasn't uploaded art for the day yet:
+
+Primary Button: "Upload your art" links to `/upload`
+
+If the user has already uploaded art for the day:
+
+Text with links: "You've already uploaded your art for today. You can [upload something different] (links to `/upload`), [see all of your art] (links to `/<username>`), or [check out what other artists have created today] (links to `/<current-date>`)."
+
+--------------------------------------------------------------------------------
+
+## API Routes
+
+**Prefix:** `/api`
+
+-   `/me` - returns information about currently authenticated user
 
 --------------------------------------------------------------------------------
 

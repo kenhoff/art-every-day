@@ -60,3 +60,4 @@ typings/
 # Project ignores
 .DS_Store
 frontend-built
+pg_data
