@@ -1,45 +1,104 @@
 import React from "react";
+import request from "superagent";
 
 class CreateAccount extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			email: "",
+			password: "",
+			repeatPassword: "",
+			username: ""
+		};
+	}
 	render() {
 		return (
 			<div>
 				<h1>Create Account</h1>
-				<div>
-					<label>
-						<span>
-							Email
-						</span>
-						<input type="email"></input>
-					</label>
-				</div>
-				<div>
-					<label>
-						<span>
-							Password
-						</span>
-						<input type="password"></input>
-					</label>
-				</div>
-				<div>
-					<label>
-						<span>
-							Repeat Password
-						</span>
-						<input type="password"></input>
-					</label>
-				</div>
-				<div>
-					<label>
-						<span>
-							Username
-						</span>
-						<input type="text"></input>
-					</label>
-				</div>
-				<button>Create Account</button>
+				<form onSubmit={(e) => {
+					e.preventDefault();
+					this.submitForm();
+				}}>
+					<div>
+						<label>
+							<span>
+								Email
+							</span>
+							<input type="email" value={this.state.email} onChange={(e) => {
+								this.updateInputField(e, "email");
+							}}></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							<span>
+								Password
+							</span>
+							<input type="password" value={this.state.password} onChange={(e) => {
+								this.updateInputField(e, "password");
+							}}></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							<span>
+								Repeat Password
+							</span>
+							<input type="password" value={this.state.repeatPassword} onChange={(e) => {
+								this.updateInputField(e, "repeatPassword");
+							}}></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							<span>
+								Username
+							</span>
+							<input type="text" value={this.state.username} onChange={(e) => {
+								this.updateInputField(e, "username");
+							}}></input>
+						</label>
+					</div>
+					<button type="submit">Create Account</button>
+				</form>
 			</div>
 		);
+	}
+	updateInputField(e, label) {
+		this.setState({[label]: e.target.value});
+	}
+	submitForm() {
+		// perform checks
+		// check that email is in fact actually an email
+		let emailIsValid = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.state.email);
+		// console.log(`email is valid: ${emailIsValid}`);
+
+		// check that password is > 8 characters
+		let passwordIsLongEnough = (this.state.password.length >= 8);
+		// console.log(`password is long enough: ${passwordIsLongEnough}`);
+
+		// check that resetPassword == password
+		let passwordsMatch = (this.state.password == this.state.repeatPassword);
+		// console.log(`passwords match: ${passwordsMatch}`);
+
+		// check that username is alphanumeric and not blank
+		let usernameValid = /^[A-Za-z0-9]+$/.test(this.state.username);
+		// console.log(`username is valid: ${usernameValid}`);
+
+		if (emailIsValid && passwordIsLongEnough && passwordsMatch && usernameValid) {
+
+			// console.log("submitting...");
+
+			request.post("/api/users").send({email: this.state.email, password: this.state.password, username: this.state.username}).end((err, res) => {
+				if (err || !res.ok) {
+					console.log("Oh no! error");
+				} else {
+					console.log("yay got " + JSON.stringify(res.body));
+				}
+			});
+
+		}
+
 	}
 }
 

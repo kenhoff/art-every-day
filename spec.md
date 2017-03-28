@@ -95,6 +95,8 @@ Spinner next to email, username fields
 
 "Create Account" button grayed out
 
+bonus part 2: after submitting the form, spinner on create account
+
 ##### Error
 
 Red outline with error message next to email, password, or username fields
