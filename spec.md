@@ -67,11 +67,46 @@
 #### React Components / Elements
 
 -   [Navbar](#navbar)
--   Email input field (must be validated)
+-   Email input field (must be unique, validate eventually)
 -   Password field (must be at least 8 characters, but I don't care what's in it)
 -   Repeat password field (must match) (but we might not need that, with reset password flow)
 -   Pick a username field (must be unique in the system - will have to check)
 -   "Create account" button (grayed out until all fields are satisfied)
+
+#### UI States
+
+##### Blank
+
+"Create Account" button grayed out
+
+##### Partial
+
+"Create Account" button grayed out
+
+##### Ideal
+
+All input fields filled in and validated
+
+"Create Account" button active
+
+##### Loading
+
+Spinner next to email, username fields
+
+"Create Account" button grayed out
+
+##### Error
+
+Red outline with error message next to email, password, or username fields
+
+"Create Account" button grayed out
+
+#### API Calls
+
+-   `POST` to `/api/users`
+    -   email
+    -   password
+    -   username
 
 --------------------------------------------------------------------------------
 
@@ -331,11 +366,75 @@ Text with links: "You've already uploaded your art for today. You can [upload so
 
 --------------------------------------------------------------------------------
 
+### Email Input
+
+Part of the [Create Account](#create-account-view) form.
+
+#### Children
+
+-   "Email" label
+-   Text input with type `email`
+-   Error message - "Not a valid email" that shows onBlur
+
+--------------------------------------------------------------------------------
+
+### Password Input
+
+Part of the [Create Account](#create-account-view) form.
+
+#### Children
+
+-   Two text inputs with type `password`
+-   First with a label of "Password"
+-   Error message on the first "Must be more than 8 characters" that shows onBlur
+-   Second with a label of "Repeat Password"
+-   Error message on the second "Passwords do not match" that shows onBlur
+
+--------------------------------------------------------------------------------
+
+### Username Input
+
+Part of the [Create Account](#create-account-view) form.
+
+#### Children
+
+-   "Username" label
+-   Text input with type `text`
+-   Error message with "Username has already been taken" that shows onBlur
+
+--------------------------------------------------------------------------------
+
+### Create Account Button
+
+Part of the [Create Account](#create-account-view) form.
+
+#### Children
+
+-   "Create Account" button that's grayed out / disabled if any of the form has an error state, or if any field is currently untouched / blank
+
+--------------------------------------------------------------------------------
+
 ## API Routes
 
 **Prefix:** `/api`
 
--   `/me` - returns information about currently authenticated user
+-   `/me`
+    -   `GET`: returns information about currently authenticated user, or 401
+    -   `POST`: updates the user?
+-   `/users`
+    -   `POST`: creates a new user
+        -   email
+        -   password
+        -   username
+
+--------------------------------------------------------------------------------
+
+## Database Schema
+
+-   `users`
+    -   `id`: primary, increments
+    -   `email`: string
+    -   `password`: string (`bcrypt`ed)
 
 --------------------------------------------------------------------------------
 
