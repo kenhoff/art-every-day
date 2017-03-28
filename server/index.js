@@ -3,6 +3,8 @@ const path = require("path");
 
 let app = express();
 
+require("./api/index.js")(app);
+
 app.use(express.static(path.resolve(__dirname + "/../frontend-built")));
 
 app.use(express.static(path.resolve(__dirname + "/../assets")));
