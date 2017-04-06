@@ -14,7 +14,7 @@ module.exports = {
 		"sourceType": "module"
 	},
 	"plugins": [
-		"react"
+		"react", "sort-requires"
 	],
 	"rules": {
 		"indent": [
@@ -35,6 +35,7 @@ module.exports = {
 		],
 		"no-console": ["warn"],
 		"sort-keys": ["error"],
-		"sort-imports": ["error"]
+		"sort-imports": ["error"],
+		"sort-requires/sort-requires": 2
 	}
 };
