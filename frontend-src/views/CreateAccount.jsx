@@ -1,4 +1,4 @@
-import React from "react";
+import React, {PropTypes} from "react";
 import request from "superagent";
 
 class CreateAccount extends React.Component {
@@ -61,6 +61,10 @@ class CreateAccount extends React.Component {
 					</div>
 					<button type="submit">Create Account</button>
 				</form>
+				<a href="/create-account" onClick={(e) => {
+					e.preventDefault();
+					this.props.history.push("/create-account");
+				}}>Already have an account? Sign in here</a>
 			</div>
 		);
 	}
@@ -101,5 +105,9 @@ class CreateAccount extends React.Component {
 
 	}
 }
+
+CreateAccount.propTypes = {
+	history: PropTypes.object.isRequired
+};
 
 export default CreateAccount;
