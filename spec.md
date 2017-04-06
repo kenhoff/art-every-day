@@ -72,6 +72,7 @@
 -   Repeat password field (must match) (but we might not need that, with reset password flow)
 -   Pick a username field (must be unique in the system - will have to check)
 -   "Create account" button (grayed out until all fields are satisfied)
+-   "Already have an account? Sign in here" link
 
 #### UI States
 
@@ -364,7 +365,7 @@ Primary Button: "Upload your art" links to `/upload`
 
 If the user has already uploaded art for the day:
 
-Text with links: "You've already uploaded your art for today. You can [upload something different] (links to `/upload`), [see all of your art] (links to `/<username>`), or [check out what other artists have created today] (links to `/<current-date>`)."
+Text with links: "You've already uploaded your art for today. You can [upload something different] \(links to `/upload`), [see all of your art] \(links to `/<username>`), or [check out what other artists have created today] \(links to `/<current-date>`)."
 
 --------------------------------------------------------------------------------
 
@@ -428,6 +429,7 @@ Part of the [Create Account](#create-account-view) form.
         -   email
         -   password
         -   username
+        -   signs in and returns back the newly created user
 
 --------------------------------------------------------------------------------
 
