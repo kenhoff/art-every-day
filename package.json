@@ -1,5 +1,5 @@
 {
-  "name": "art-every-day",
+  "name": "draw-every-day",
   "version": "0.0.1",
   "description": "",
   "dependencies": {
@@ -40,12 +40,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kenhoff/art-every-day.git"
+    "url": "git+https://github.com/kenhoff/draw-every-day.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kenhoff/art-every-day/issues"
+    "url": "https://github.com/kenhoff/draw-every-day/issues"
   },
-  "homepage": "https://github.com/kenhoff/art-every-day#readme"
+  "homepage": "https://github.com/kenhoff/draw-every-day#readme"
 }
