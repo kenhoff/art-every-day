@@ -108,9 +108,15 @@ module.exports = (app) => {
 					password: hash,
 					username: req.body.username,
 				}).returning(["id", "email", "username"]).then((results) => {
+					// "login" the created user (set up a session) and send them a success response
 					let createdUser = results[0];
-					// req.login(createdUser);
-					res.status(201).send(createdUser);
+					req.login(createdUser, (err) => {
+						if (err) {
+							res.status(500).send(err);
+						} else {
+							res.status(201).send(createdUser);
+						}
+					});
 				}).catch((err) => {
 					res.status(500).send(err);
 				});
