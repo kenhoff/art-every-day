@@ -23,7 +23,7 @@ class Navbar extends React.Component {
 			<div>
 				<h1 onClick={() => {
 					this.props.history.push("/");
-				}}>Art Every Day</h1>
+				}}>Draw Every Day</h1>
 				{rightElements}
 			</div>
 		);

@@ -1,4 +1,4 @@
-# "Art Every Day" spec
+# "Draw Every Day" spec
 
 ## URLs
 
@@ -290,7 +290,7 @@ App name, user profile image, authenticated user's username, and link to support
 
 #### Children
 
--   App name (Art Every Day)
+-   App name (Draw Every Day)
 -   ["Create Account" / "Sign In" buttons](#create-account--sign-in-buttons)
 -   Username of authenticated user (links to `/<username>`)
 -   Profile image thumbnail of authenticated user (links to `/<username>`)
