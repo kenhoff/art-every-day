@@ -365,7 +365,7 @@ Primary Button: "Upload your art" links to `/upload`
 
 If the user has already uploaded art for the day:
 
-Text with links: "You've already uploaded your art for today. You can [upload something different] \(links to `/upload`), [see all of your art] \(links to `/<username>`), or [check out what other artists have created today] \(links to `/<current-date>`)."
+Text with links: "You've already uploaded your art for today. You can [upload something different] (links to `/upload`), [see all of your art] (links to `/<username>`), or [check out what other artists have created today] (links to `/<current-date>`)."
 
 --------------------------------------------------------------------------------
 
@@ -421,15 +421,23 @@ Part of the [Create Account](#create-account-view) form.
 
 **Prefix:** `/api`
 
--   `/me`
-    -   `GET`: returns information about currently authenticated user, or 401
-    -   `POST`: updates the user?
--   `/users`
-    -   `POST`: creates a new user
-        -   email
-        -   password
-        -   username
-        -   signs in and returns back the newly created user
+-	`/api/users` (GET)
+-	`/api/users/<userID>` (GET, POST)
+
+### Auth routes
+
+There are a subset of routes, not for views, not quite strictly API routes, that are used for authentication.
+
+-	`/create-account` (POST)
+	-   email
+	-   password
+	-   username
+	-   signs in and returns back the newly created user
+-	`/me` (GET)
+	-   if user is authed, send {user:user}
+	-   if unauthed, send {user:null}
+-	`/login` (POST)
+
 
 --------------------------------------------------------------------------------
 

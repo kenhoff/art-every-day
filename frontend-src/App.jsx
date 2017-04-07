@@ -7,6 +7,7 @@ import React from "react";
 import SignIn from "./views/SignIn.jsx";
 import jstz from "jstz";
 import moment from "moment-timezone";
+import request from "superagent";
 
 class App extends React.Component {
 	constructor(props) {
@@ -18,16 +19,27 @@ class App extends React.Component {
 		// get information about user
 		// make a call to `/api/me` - load this.state.user with response
 
-		// get current date in browser's time zone
-		this.setState({
-			currentDate: moment().tz(jstz.determine().name()).format("YYYY-MM-DD")
+		request.get("/me").end((err, res) => {
+			if (err || !res.ok) {
+				console.log(err);
+			} else {
+				this.setState(res.body);
+			}
+
+			// get current date in browser's time zone
+			this.setState({
+				currentDate: moment().tz(jstz.determine().name()).format("YYYY-MM-DD")
+			});
 		});
+	}
+	signInUser(user) {
+		this.setState({user: user});
 	}
 	render() {
 		return (
 			<Router>
 				<div>
-					<Navbar></Navbar>
+					<Navbar user={this.state.user}></Navbar>
 					<Route exact path="/" component={(props) => {
 						if (this.state.user) {
 							return (<Dashboard {...props} currentDate={this.state.currentDate} user={this.state.user}/>);
@@ -35,8 +47,20 @@ class App extends React.Component {
 							return (<LandingPage {...props} currentDate={this.state.currentDate}/>);
 						}
 					}}></Route>
-					<Route path="/create-account" component={CreateAccount}></Route>
-					<Route path="/sign-in" component={SignIn}></Route>
+					<Route path="/create-account" component={(props) => {
+						return (
+							<CreateAccount {...props} signInUser={(user) => {
+								this.signInUser(user);
+							}}></CreateAccount>
+						);
+					}}></Route>
+					<Route path="/sign-in" component={(props) => {
+						return (
+							<SignIn {...props} signInUser={(user) => {
+								this.signInUser(user);
+							}}></SignIn>
+					);
+					}}></Route>
 				</div>
 			</Router>
 		);

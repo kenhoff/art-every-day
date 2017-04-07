@@ -3,9 +3,14 @@ const consts = require("../consts.js");
 const knex = require("knex")(require("../knexfile.js"));
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
+const session = require("express-session");
 
+let localStrategyFields = {
+	passwordField: "password",
+	usernameField: "email"
+};
 
-passport.use(new LocalStrategy(
+passport.use(new LocalStrategy(localStrategyFields,
 	function(email, password, done) {
 		knex.select().table("users").where({
 			email: email
@@ -20,6 +25,17 @@ passport.use(new LocalStrategy(
 				done("Two users found with the same email");
 			} else {
 				// compare user's password with provided one
+				let userInDatabase = users[0];
+				bcrypt.compare(password, userInDatabase.password, (err, result) => {
+					if (result) {
+						delete userInDatabase.password;
+						done(null, userInDatabase);
+					} else {
+						done(null, false, {
+							message: "Incorrect email or password."
+						});
+					}
+				});
 			}
 		}).catch((err) => {
 			done(err);
@@ -27,17 +43,49 @@ passport.use(new LocalStrategy(
 	}
 ));
 
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+	knex.select("id", "email", "username").table("users").where({
+		id: id
+	}).then((users) => {
+		console.log(users[0]);
+		done(null, users[0]);
+	}).catch((error) => {
+		done(error);
+	});
+});
+
 module.exports = (app) => {
 
-	// app.use(passport.initialize());
-	// app.use(passport.session());
+	app.use(session({
+		resave: false,
+		saveUninitialized: false,
+		secret: process.env.SESSION_SECRET,
+	}));
 
-	app.post("/api/users", (req, res) => {
-		console.log("post to create account?");
-		// create a user - should this be part of the API? can you even call the API without creating a user?
-		// whatever - this is probably easy to fix later.
+	app.use(passport.initialize());
+	app.use(passport.session());
 
+	app.get("/me", (req, res) => {
+		if (req.user) {
+			res.send({
+				user: req.user
+			});
+		} else {
+			// we send an empty user, because a 401 throws an error on the browser
+			res.send({
+				user: null
+			});
+		}
+	});
 
+	app.post("/login", passport.authenticate("local"), (req, res) => {
+		res.send(req.user);
+	});
+
+	app.post("/create-account", (req, res) => {
 		// verify that all the fields are present and valid
 		// check that email is in fact actually an email
 		let emailIsValid = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email);
@@ -54,19 +102,16 @@ module.exports = (app) => {
 		if (emailIsValid && passwordIsLongEnough && usernameValid) {
 			// create user in DB
 			bcrypt.hash(req.body.password, consts.SALT_ROUNDS, function(err, hash) {
-				console.log("saving", hash);
 				// Store hash in your password DB.
 				knex.table("users").insert({
 					email: req.body.email,
 					password: hash,
 					username: req.body.username,
-				}).returning(["id", "email", "username"]).then((users) => {
-					console.log(users[0]);
-					// log the new user in with req.login, and redirect them to dashboard?
-					// req.login()
-					res.status(201).send(users[0]);
+				}).returning(["id", "email", "username"]).then((results) => {
+					let createdUser = results[0];
+					// req.login(createdUser);
+					res.status(201).send(createdUser);
 				}).catch((err) => {
-					console.log(err);
 					res.status(500).send(err);
 				});
 			});
