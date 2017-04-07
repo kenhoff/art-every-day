@@ -5,10 +5,13 @@ const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const session = require("express-session");
 
+const KnexSessionStore = require("connect-session-knex")(session);
+
 let localStrategyFields = {
 	passwordField: "password",
 	usernameField: "email"
 };
+
 
 passport.use(new LocalStrategy(localStrategyFields,
 	function(email, password, done) {
@@ -62,6 +65,7 @@ module.exports = (app) => {
 		resave: false,
 		saveUninitialized: false,
 		secret: process.env.SESSION_SECRET,
+		store: new KnexSessionStore({knex: knex})
 	}));
 
 	app.use(passport.initialize());
@@ -89,7 +93,7 @@ module.exports = (app) => {
 		res.redirect("/");
 	});
 
-	app.post("/create-account", (req, res) => {
+	app.post("/signup", (req, res) => {
 		// verify that all the fields are present and valid
 		// check that email is in fact actually an email
 		let emailIsValid = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email);
