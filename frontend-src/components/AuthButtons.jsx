@@ -5,12 +5,14 @@ class AuthButtons extends React.Component {
 	render() {
 		return (
 			<div>
-				<button onClick={() => {
-					this.props.history.push("/create-account");
-				}}>Create Account</button>
-				<button onClick={() => {
-					this.props.history.push("/sign-in");
-				}}>Sign In</button>
+				<a href="/signup" onClick={(e) => {
+					e.preventDefault();
+					this.props.history.push("/signup");
+				}}>Sign Up</a>
+				<a href="/login" onClick={(e) => {
+					e.preventDefault();
+					this.props.history.push("/login");
+				}}>Log In</a>
 			</div>
 		);
 	}

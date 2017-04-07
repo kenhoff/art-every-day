@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react";
 import request from "superagent";
 
-class CreateAccount extends React.Component {
+class SignUp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -14,7 +14,7 @@ class CreateAccount extends React.Component {
 	render() {
 		return (
 			<div>
-				<h1>Create Account</h1>
+				<h1>Sign Up</h1>
 				<form onSubmit={(e) => {
 					e.preventDefault();
 					this.submitForm();
@@ -59,12 +59,12 @@ class CreateAccount extends React.Component {
 							}}></input>
 						</label>
 					</div>
-					<button type="submit">Create Account</button>
+					<button type="submit">Sign Up</button>
 				</form>
-				<a href="/sign-in" onClick={(e) => {
+				<a href="/login" onClick={(e) => {
 					e.preventDefault();
-					this.props.history.push("/sign-in");
-				}}>Already have an account? Sign in here</a>
+					this.props.history.push("/login");
+				}}>Already have an account? Log in here</a>
 			</div>
 		);
 	}
@@ -91,13 +91,13 @@ class CreateAccount extends React.Component {
 
 		if (emailIsValid && passwordIsLongEnough && passwordsMatch && usernameValid) {
 
-			request.post("/create-account").send({email: this.state.email, password: this.state.password, username: this.state.username}).end((err, res) => {
+			request.post("/signup").send({email: this.state.email, password: this.state.password, username: this.state.username}).end((err, res) => {
 				if (err || !res.ok) {
 					console.log("Oh no! error:", err);
 				} else {
 					console.log("yay got " + JSON.stringify(res.body));
 					// call this.props.signin, load the user into the App component's state
-					this.props.signInUser(res.body);
+					this.props.logInUser(res.body);
 					this.props.history.push("/");
 				}
 			});
@@ -107,9 +107,9 @@ class CreateAccount extends React.Component {
 	}
 }
 
-CreateAccount.propTypes = {
+SignUp.propTypes = {
 	history: PropTypes.object.isRequired,
-	signInUser: PropTypes.func.isRequired
+	logInUser: PropTypes.func.isRequired
 };
 
-export default CreateAccount;
+export default SignUp;

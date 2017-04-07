@@ -2,7 +2,7 @@ import React, {PropTypes} from "react";
 import request from "superagent";
 import {withRouter} from "react-router-dom";
 
-class SignIn extends React.Component {
+class LogIn extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -13,7 +13,7 @@ class SignIn extends React.Component {
 	render() {
 		return (
 			<div>
-				<h1>Sign In</h1>
+				<h1>Log In</h1>
 				<form onSubmit={(e) => {
 					e.preventDefault();
 					this.submitForm();
@@ -35,29 +35,33 @@ class SignIn extends React.Component {
 						</label>
 					</div>
 					<button type="submit">
-						Sign In
+						Log In
 					</button>
 				</form>
+				<a href="/signup" onClick={(e) => {
+					e.preventDefault();
+					this.props.history.push("/signup");
+				}}>Don't have an account yet? Sign up here</a>
+
 			</div>
 		);
 	}
 	submitForm() {
-		console.log("submitting form...");
 		request.post("/login").type("form").send({email: this.state.email, password: this.state.password}).end((err, res) => {
 			if (err || !res.ok) {
 				console.log(err);
 			} else {
 				// redirect to /, set user
-				this.props.signInUser(res.body);
+				this.props.logInUser(res.body);
 				this.props.history.push("/");
 			}
 		});
 	}
 }
 
-SignIn.propTypes = {
+LogIn.propTypes = {
 	history: PropTypes.object.isRequired,
-	signInUser: PropTypes.func.isRequired,
+	logInUser: PropTypes.func.isRequired
 };
 
-export default withRouter(SignIn);
+export default withRouter(LogIn);

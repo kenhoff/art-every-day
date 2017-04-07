@@ -1,10 +1,10 @@
 import {Route, BrowserRouter as Router} from "react-router-dom";
-import CreateAccount from "./views/CreateAccount.jsx";
 import Dashboard from "./views/Dashboard.jsx";
 import LandingPage from "./views/LandingPage.jsx";
+import LogIn from "./views/LogIn.jsx";
 import Navbar from "./components/Navbar.jsx";
 import React from "react";
-import SignIn from "./views/SignIn.jsx";
+import SignUp from "./views/SignUp.jsx";
 import jstz from "jstz";
 import moment from "moment-timezone";
 import request from "superagent";
@@ -32,7 +32,7 @@ class App extends React.Component {
 			});
 		});
 	}
-	signInUser(user) {
+	logInUser(user) {
 		this.setState({user: user});
 	}
 	render() {
@@ -47,19 +47,19 @@ class App extends React.Component {
 							return (<LandingPage {...props} currentDate={this.state.currentDate}/>);
 						}
 					}}></Route>
-					<Route path="/create-account" component={(props) => {
+					<Route path="/signup" component={(props) => {
 						return (
-							<CreateAccount {...props} signInUser={(user) => {
-								this.signInUser(user);
-							}}></CreateAccount>
+							<SignUp {...props} logInUser={(user) => {
+								this.logInUser(user);
+							}}></SignUp>
 						);
 					}}></Route>
-					<Route path="/sign-in" component={(props) => {
+					<Route path="/login" component={(props) => {
 						return (
-							<SignIn {...props} signInUser={(user) => {
-								this.signInUser(user);
-							}}></SignIn>
-					);
+							<LogIn {...props} logInUser={(user) => {
+								this.logInUser(user);
+							}}></LogIn>
+						);
 					}}></Route>
 				</div>
 			</Router>

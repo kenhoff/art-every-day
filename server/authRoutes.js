@@ -50,7 +50,6 @@ passport.deserializeUser((id, done) => {
 	knex.select("id", "email", "username").table("users").where({
 		id: id
 	}).then((users) => {
-		console.log(users[0]);
 		done(null, users[0]);
 	}).catch((error) => {
 		done(error);
@@ -83,6 +82,11 @@ module.exports = (app) => {
 
 	app.post("/login", passport.authenticate("local"), (req, res) => {
 		res.send(req.user);
+	});
+
+	app.get("/logout", (req, res) => {
+		req.logout();
+		res.redirect("/");
 	});
 
 	app.post("/create-account", (req, res) => {
