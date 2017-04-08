@@ -1,3 +1,4 @@
+const async = require("async");
 const bcrypt = require("bcrypt");
 const consts = require("../consts.js");
 const knex = require("knex")(require("../knexfile.js"));
@@ -65,7 +66,9 @@ module.exports = (app) => {
 		resave: false,
 		saveUninitialized: false,
 		secret: process.env.SESSION_SECRET,
-		store: new KnexSessionStore({knex: knex})
+		store: new KnexSessionStore({
+			knex: knex
+		})
 	}));
 
 	app.use(passport.initialize());
@@ -94,45 +97,69 @@ module.exports = (app) => {
 	});
 
 	app.post("/signup", (req, res) => {
-		// verify that all the fields are present and valid
-		// check that email is in fact actually an email
-		let emailIsValid = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email);
-		// console.log(`email is valid: ${emailIsValid}`);
 
-		// check that password is > 8 characters
-		let passwordIsLongEnough = (req.body.password.length >= 8);
-		// console.log(`password is long enough: ${passwordIsLongEnough}`);
+		// check that a user does not already exist with that email
+		// check that a user does not already exist with that username
 
-		// check that username is alphanumeric and not blank
-		let usernameValid = /^[A-Za-z0-9]+$/.test(req.body.username);
-		// console.log(`username is valid: ${usernameValid}`);
-
-		if (emailIsValid && passwordIsLongEnough && usernameValid) {
-			// create user in DB
-			bcrypt.hash(req.body.password, consts.SALT_ROUNDS, function(err, hash) {
-				// Store hash in your password DB.
-				knex.table("users").insert({
-					email: req.body.email,
-					password: hash,
-					username: req.body.username,
-				}).returning(["id", "email", "username"]).then((results) => {
-					// "login" the created user (set up a session) and send them a success response
-					let createdUser = results[0];
-					req.login(createdUser, (err) => {
-						if (err) {
-							res.status(500).send(err);
-						} else {
-							res.status(201).send(createdUser);
-						}
-					});
-				}).catch((err) => {
-					res.status(500).send(err);
+		async.parallel({
+			email: (cb) => {
+				// test if a user exists with the given email
+				let email = req.body.email;
+				knex.table("users").select().where({
+					email: email
+				}).then((results) => {
+					if (results.length > 0) {
+						return cb(null, ["A user with this email already exists."]);
+					} else {
+						return cb(null);
+					}
 				});
-			});
-		} else {
-			// send 400
-			res.status(400).send();
-		}
+			},
+			username: (cb) => {
+				// test if a user exists with the given username
+				let username = req.body.username;
+				knex.table("users").select().where({
+					username: username
+				}).then((results) => {
+					if (results.length > 0) {
+						return cb(null, ["This username is already taken."]);
+					} else {
+						return cb(null);
+					}
+				});
+			}
+		}, (err, errors) => {
+			if (err) {
+				// then there were big problems
+				res.status(500).send(err);
+			} else if (errors.email || errors.username) {
+				// then there were some validation errors (non-unique email/username)
+				res.status(400).send(errors);
+			} else {
+				// create user in DB
+				bcrypt.hash(req.body.password, consts.SALT_ROUNDS, function(err, hash) {
+					// Store hash in your password DB.
+					knex.table("users").insert({
+						email: req.body.email,
+						password: hash,
+						username: req.body.username,
+					}).returning(["id", "email", "username"]).then((results) => {
+						// "login" the created user (set up a session) and send them a success response
+						let createdUser = results[0];
+						req.login(createdUser, (err) => {
+							if (err) {
+								res.status(500).send(err);
+							} else {
+								res.status(201).send(createdUser);
+							}
+						});
+					}).catch((err) => {
+						res.status(500).send(err);
+					});
+				});
+			}
+		});
+
 	});
 
 };

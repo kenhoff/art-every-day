@@ -134,6 +134,7 @@ class SignUp extends React.Component {
 			request.post("/signup").send({email: this.state.email, password: this.state.password, username: this.state.username}).end((err, res) => {
 				if (err || !res.ok) {
 					// error
+					this.setState({errors: res.body});
 				} else {
 					// call this.props.signin, load the user into the App component's state
 					this.props.logInUser(res.body);
