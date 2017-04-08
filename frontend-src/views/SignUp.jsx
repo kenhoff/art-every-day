@@ -128,24 +128,22 @@ class SignUp extends React.Component {
 		this.setState({[label]: e.target.value});
 	}
 	submitForm() {
-		let errors = validate(this.state, constraints, {format: "custom"});
-		if (!errors) {
+		validate.async(this.state, constraints, {format: "custom"}).then(() => {
+			// validation was successful
 			this.setState({errors: {}});
 			request.post("/signup").send({email: this.state.email, password: this.state.password, username: this.state.username}).end((err, res) => {
 				if (err || !res.ok) {
-					console.log("Oh no! error:", err);
+					// error
 				} else {
-					console.log("yay got " + JSON.stringify(res.body));
 					// call this.props.signin, load the user into the App component's state
 					this.props.logInUser(res.body);
 					this.props.history.push("/");
 				}
 			});
-		} else {
+		}, (errors) => {
+			// validation was not successful
 			this.setState({errors: errors});
-			console.log(errors);
-		}
-
+		});
 	}
 }
 
@@ -155,49 +153,3 @@ SignUp.propTypes = {
 };
 
 export default SignUp;
-
-//
-// 	<label>
-// 		<span>
-// 			Email
-// 		</span>
-// 		<input type="email" value={this.state.email} onChange={(e) => {
-// 			this.updateInputField(e, "email");
-// 		}}></input>
-// 		{this.state.errors.email.map((error) => {
-// 			return (
-// 				<div>{error}</div>
-// 			);
-// 		}) || null}
-// 	</label>
-// </div>
-// <div>
-// 	<label>
-// 		<span>
-// 			Password
-// 		</span>
-// 		<input type="password" value={this.state.password} onChange={(e) => {
-// 			this.updateInputField(e, "password");
-// 		}}></input>
-// 	</label>
-// </div>
-// <div>
-// 	<label>
-// 		<span>
-// 			Repeat Password
-// 		</span>
-// 		<input type="password" value={this.state.repeatPassword} onChange={(e) => {
-// 			this.updateInputField(e, "repeatPassword");
-// 		}}></input>
-// 	</label>
-// </div>
-// <div>
-// 	<label>
-// 		<span>
-// 			Username
-// 		</span>
-// 		<input type="text" value={this.state.username} onChange={(e) => {
-// 			this.updateInputField(e, "username");
-// 		}}></input>
-// 	</label>
-// </div>
