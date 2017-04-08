@@ -87,7 +87,24 @@ module.exports = (app) => {
 		}
 	});
 
-	app.post("/login", passport.authenticate("local"), (req, res) => {
+	app.post("/login", (req, res, next) => {
+		passport.authenticate("local", (err, user, info) => {
+			if (err) {
+				return res.status(500).send(err)
+			} else if (!user) {
+				res.status(400).send({
+					password: ["This isn't the correct password for this email."]
+				});
+			} else {
+				req.logIn(user, function(err) {
+					if (err) {
+						return next(err);
+					}
+					return next();
+				});
+			}
+		})(req, res, next); // ?
+	}, (req, res) => {
 		res.send(req.user);
 	});
 

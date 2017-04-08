@@ -9,10 +9,11 @@ class Navbar extends React.Component {
 		// if no user, display Authbuttons
 		let rightElements;
 		if (this.props.user) {
-			rightElements = ( <div>
-				<UserCard></UserCard>
-				<a href="/logout">Log out</a>
-			</div>
+			rightElements = (
+				<div>
+					<UserCard username={this.props.user.username}></UserCard>
+					<a href="/logout">Log out</a>
+				</div>
 			);
 		} else {
 			rightElements = (

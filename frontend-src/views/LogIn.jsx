@@ -106,7 +106,7 @@ class LogIn extends React.Component {
 			this.setState({errors: {}});
 			request.post("/login").type("form").send({email: this.state.email, password: this.state.password}).end((err, res) => {
 				if (err || !res.ok) {
-					console.log(err);
+					this.setState({errors: res.body});
 				} else {
 					// redirect to /, set user
 					this.props.logInUser(res.body);
